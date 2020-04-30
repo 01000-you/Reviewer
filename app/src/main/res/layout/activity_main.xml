@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:weightSum="10"
+    >
+    <TextView
+        android:id="@+id/TextView_kor_snt"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:layout_gravity="center"
+        android:background="#FFFFFF"
+        android:text="KOR"
+        android:paddingTop="20sp"
+        android:paddingRight="20sp"
+        android:paddingLeft="20sp"
+        android:paddingBottom="20sp"
+        android:layout_weight="2"/>
+
+    <TextView
+        android:id="@+id/TextView_eng_snt"
+        android:layout_width="match_parent"
+        android:layout_height="84dp"
+        android:text="ENG"
+        android:layout_gravity="center"
+        android:paddingTop="20sp"
+        android:paddingRight="20sp"
+        android:paddingLeft="20sp"
+        android:paddingBottom="20sp"
+        android:layout_weight="2"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        >
+        <EditText
+            android:id="@+id/EditText_practice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+        </EditText>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:weightSum="3">
+        <Button
+            android:id="@+id/Button_fail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="다시"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@+id/Button_view_ans"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="정답"
+            android:layout_weight="1"
+            />
+
+        <Button
+            android:id="@+id/Button_success"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="완료"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+</LinearLayout>
