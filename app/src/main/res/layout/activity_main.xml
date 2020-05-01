@@ -48,18 +48,18 @@
         android:orientation="vertical"
         android:weightSum="3">
         <Button
-            android:id="@+id/Button_fail"
+            android:id="@+id/Button_back"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="다시"
+            android:text="back"
             android:layout_weight="1"
             />
 
         <Button
-            android:id="@+id/Button_view_ans"
+            android:id="@+id/Button_fail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="정답"
+            android:text="keep"
             android:layout_weight="1"
             />
 
@@ -67,7 +67,7 @@
             android:id="@+id/Button_success"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="완료"
+            android:text="perfect"
             android:layout_weight="1"/>
     </LinearLayout>
 
