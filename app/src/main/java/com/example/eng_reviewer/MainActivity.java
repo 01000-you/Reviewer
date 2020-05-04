@@ -2,26 +2,28 @@ package com.example.eng_reviewer;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
+import com.example.eng_reviewer.Fragment.EnrollFragment;
+import com.example.eng_reviewer.Fragment.ReviewerFragment;
 import com.example.eng_reviewer.sentences.Snt_manager;
 
 public class MainActivity extends AppCompatActivity {
+    Snt_manager sentence;
 
-    Button Button_fail,Button_success, Button_back;
-    TextView TextView_eng_snt, TextView_kor_snt;
-    EditText EditText_practice;
-    Snt_manager sentence = new Snt_manager();
-    int success_button_state = 0;
+    public MainActivity(){
+        sentence = new Snt_manager();
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -29,66 +31,47 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button_fail = findViewById(R.id.Button_fail);
-        Button_success = findViewById(R.id.Button_success);
-        Button_back = findViewById(R.id.Button_back);
+        ViewPager pager = findViewById(R.id.pager);
+        //캐싱을 해놓을 프래그먼트 개수
+        pager.setOffscreenPageLimit(1);
 
-        TextView_eng_snt = findViewById(R.id.TextView_eng_snt);
-        TextView_kor_snt = findViewById(R.id.TextView_kor_snt);
+        //getSupportFragmentManager로 프래그먼트 참조가능
+        MoviePagerAdapter adapter = new MoviePagerAdapter(getSupportFragmentManager());
 
-        EditText_practice = findViewById(R.id.EditText_practice);
-        try {
-            sentence.load_csv();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("Load_csv", "CSV읽기 실패");
-        }
-        TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
+        ReviewerFragment fragment1 = new ReviewerFragment(sentence);
+        adapter.addItem(fragment1);
 
-            Button_back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    sentence.before_sentence();
-                    TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
-                    TextView_eng_snt.setText("");
-                    success_button_state = 0;
-                }
-            });
-            Button_fail.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (success_button_state == 1){ // 정답 공개 상태
-                        if(sentence.get_eng().equals("The End")) {
-                            sentence.next_sentence();
-                            TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
-                            TextView_eng_snt.setText("");
-                            success_button_state = (success_button_state + 1) % 2;
-                            sentence.sub_score();
-                        }
-                    }
-                }
-            });
-            Button_success.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (success_button_state == 0){ // 정답 미공개 상태
-                        TextView_eng_snt.setText(sentence.get_eng());
-                        if(sentence.get_eng().equals("The End")){
-                            Button_success.setClickable(false);
-                        }
-                    }
-                    else { // 정답 공개 상태
-                        sentence.next_sentence();
-                        TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
-                        TextView_eng_snt.setText("");
-                        sentence.add_score();
-                    }
-                    success_button_state = (success_button_state + 1) % 2;
-                }
-            });
+        EnrollFragment fragment2 = new EnrollFragment(sentence);
+        adapter.addItem(fragment2);
+//
+//        Fragment3 fragment3 = new Fragment3();
+//        adapter.addItem(fragment3);
+
+        pager.setAdapter(adapter);
     }
 
-    @Override
+    //어댑터 안에서 각각의 아이템을 데이터로서 관리한다
+    class MoviePagerAdapter extends FragmentStatePagerAdapter {
+        ArrayList<Fragment> items = new ArrayList<Fragment>();
+        public MoviePagerAdapter(FragmentManager fm) {
+            super(fm);
+
+        }
+
+        public void addItem(Fragment item){
+            items.add(item);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return items.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return items.size();
+        }
+    }
     protected void onStop() {
         super.onStop();
         Log.d("MainActivity", "On_Stop");

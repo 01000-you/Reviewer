@@ -25,14 +25,13 @@ public class Snt_manager {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void load_csv() throws IOException {
-        reader = new CSVReader(new FileReader(DEFINE.LOAD_PATH));
+        reader = new CSVReader(new FileReader(DEFINE.LOAD_PATH), '\t');
         sentence_list = reader.readAll();
         num_of_sent = sentence_list.size();
         Collections.shuffle(sentence_list);
         sentence_list.sort(new Comparator<String[]>() {
             @Override
             public int compare(String[] t0, String[] t1) {
-
                 if (Integer.parseInt(t0[DEFINE.SCORE]) > Integer.parseInt(t1[DEFINE.SCORE])){
                     return 1;
                 }
@@ -52,7 +51,7 @@ public class Snt_manager {
         }
     }
     public void next_sentence() {
-        String[] null_return = {"미자믹 문장", "The End"};
+        String[] null_return = {"마지막 문장", "The End"};
         if (sentence_cnt == num_of_sent){
             next_sentence = null_return;
         }
@@ -75,15 +74,27 @@ public class Snt_manager {
     public void add_score() {
         next_sentence[DEFINE.SCORE] = String.valueOf(Integer.parseInt(next_sentence[DEFINE.SCORE]) + DEFINE.UP_POINT);
     }
-    private void add_cnt(){
+    public void add_cnt(){
         sentence_cnt = sentence_cnt + 1;
     }
     public void save_csv() throws IOException {
-        CSVWriter writer = new CSVWriter(new FileWriter(DEFINE.SAVE_PATH), ',');
+        CSVWriter writer = new CSVWriter(new FileWriter(DEFINE.SAVE_PATH), '\t');
         for (String[] i : sentence_list) {
 //            String[] entries = "first#second#third".split("#");
             writer.writeNext(i);
         }
         writer.close();
+    }
+
+    public void add_text(String[] text_arr) {
+        int length = text_arr.length;
+        if(length % 2 == 0) {
+            for (int i = 0; i < length; i += 2) {
+                sentence_list.add(new String[]{text_arr[i], text_arr[i + 1], "0"});
+            }
+        }
+        else{
+            // 짝수가 안맞는 에러 표시
+        }
     }
 }

@@ -5,12 +5,12 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.eng_reviewer_v2"
+        applicationId "com.example.eng_reviewer_debug"
 //        testApplicationId "com.example.eng_reviewer.tests"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 3
-        versionName "2.0.0"
+        versionCode 4
+        versionName "3.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -20,14 +20,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
-//            applicationVariants.all { variant ->
-//                variant.outputs.each {
-//                    output->
-//                        def file = output.outputFile
-//                        output.outputFile = new File(file.parent,
-//                                file.name.replace("app", "appname." + defaultConfig.versionName))
-//                }
-//            }
         }
         debug {
             signingConfig signingConfigs.debug
@@ -35,7 +27,12 @@ android {
             proguardFile 'proguard-rules.txt'
         }
     }
-
+    android {
+        lintOptions {
+            checkReleaseBuilds false
+            abortOnError false
+        }
+    }
 }
 
 dependencies {
