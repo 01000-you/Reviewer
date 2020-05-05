@@ -5,9 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class EnrollFragment extends Fragment {
     Snt_manager sentence;
     Button Button_save, Button_cancel;
     EditText EditText_sentences;
+    boolean Button_save_state;
     public EnrollFragment(Snt_manager _sentence){
         sentence = _sentence;
     }
@@ -43,21 +45,9 @@ public class EnrollFragment extends Fragment {
         Button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String Text = EditText_sentences.getText().toString();
-                if (Text.equals("")) {
-                    String[] Text_arr = Text.split("\n");
-
-                    sentence.add_text(Text_arr);
-                    EditText_sentences.setText("");
-                    try {
-                        sentence.save_csv();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                show();
             }
         });
-
         Button_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,5 +55,31 @@ public class EnrollFragment extends Fragment {
             }
         });
         return rootView;
+    };
+    void show()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("저장하시겠습니까?");
+//        builder.setMessage("구성이");
+        builder.setPositiveButton("예",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String Text = EditText_sentences.getText().toString();
+                        if (!Text.equals("")) {
+                            String[] Text_arr = Text.split("\n");
+                            if (sentence.add_text(Text_arr)){
+                                EditText_sentences.setText("");
+                            }
+                            try {sentence.save_csv();} catch (IOException e) {e.printStackTrace();}
+
+                        }
+                    }
+                });
+        builder.setNegativeButton("아니오",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        builder.show();
     }
 }

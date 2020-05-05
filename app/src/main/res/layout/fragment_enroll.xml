@@ -4,8 +4,9 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:weightSum="10"
+    xmlns:card_view="http://schemas.android.com/tools"
     >
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -14,19 +15,19 @@
         android:layout_marginRight="10sp"
         android:layout_marginTop="10sp"
         android:layout_marginBottom="10sp"
-
-
+        android:background="#FFFFFF"
+        card_view:cardCornerRadius="4dp"
         >
         <EditText
             android:id="@+id/EditText_sentences"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textColor="@android:color/black"
-            android:hint="Write your sentence\n ex) \n안녕하세요 \nHello\n..."
-            android:gravity="top"
+            android:hint="Write your sentences\n ex) \n안녕하세요 \nHello\n..."
+            android:gravity="bottom"
             >
         </EditText>
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +42,13 @@
             android:layout_height="wrap_content"
             android:text="CANCEL"
             android:layout_weight="1"
+            android:background="@drawable/btn_white"
+            android:textStyle="bold"
+            android:textSize="12dp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
             ></Button>
         <Button
             android:id="@+id/Button_save"
@@ -48,6 +56,13 @@
             android:layout_height="wrap_content"
             android:text="SAVE"
             android:layout_weight="1"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="12dp"
+            android:background="@drawable/btn_blue"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="10dp"
             ></Button>
     </LinearLayout>
 

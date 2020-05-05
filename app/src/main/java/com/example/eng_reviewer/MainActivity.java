@@ -1,15 +1,21 @@
 package com.example.eng_reviewer;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Review");
 
         ViewPager pager = findViewById(R.id.pager);
         //캐싱을 해놓을 프래그먼트 개수
@@ -48,6 +55,27 @@ public class MainActivity extends AppCompatActivity {
 //        adapter.addItem(fragment3);
 
         pager.setAdapter(adapter);
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0){
+                    setTitle("Review");
+                }
+                if(position == 1){
+                    setTitle("Register");
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     //어댑터 안에서 각각의 아이템을 데이터로서 관리한다

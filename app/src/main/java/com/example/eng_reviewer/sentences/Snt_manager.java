@@ -80,21 +80,28 @@ public class Snt_manager {
     public void save_csv() throws IOException {
         CSVWriter writer = new CSVWriter(new FileWriter(DEFINE.SAVE_PATH), '\t');
         for (String[] i : sentence_list) {
-//            String[] entries = "first#second#third".split("#");
             writer.writeNext(i);
         }
         writer.close();
     }
 
-    public void add_text(String[] text_arr) {
+    public boolean add_text(String[] text_arr) {
         int length = text_arr.length;
         if(length % 2 == 0) {
             for (int i = 0; i < length; i += 2) {
                 sentence_list.add(new String[]{text_arr[i], text_arr[i + 1], "0"});
             }
+            return true;
         }
         else{
+            return false;
             // 짝수가 안맞는 에러 표시
         }
+    }
+    public void set_eng_sentence(String s) {
+        next_sentence[DEFINE.ENG] = s;
+    }
+    public void set_kor_sentence(String s) {
+        next_sentence[DEFINE.KOR] = s;
     }
 }
