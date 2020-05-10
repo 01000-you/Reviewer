@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.eng_reviewer.R;
 import com.example.eng_reviewer.sentences.Snt_manager;
@@ -26,7 +27,6 @@ public class EnrollFragment extends Fragment {
     Snt_manager sentence;
     Button Button_save, Button_cancel;
     EditText EditText_sentences;
-    boolean Button_save_state;
     public EnrollFragment(Snt_manager _sentence){
         sentence = _sentence;
     }
@@ -67,8 +67,13 @@ public class EnrollFragment extends Fragment {
                         String Text = EditText_sentences.getText().toString();
                         if (!Text.equals("")) {
                             String[] Text_arr = Text.split("\n");
-                            if (sentence.add_text(Text_arr)){
+                            int length = sentence.add_text(Text_arr);
+                            if (length != 0){
                                 EditText_sentences.setText("");
+                                Toast.makeText(getActivity(), String.valueOf(length/2) +"개의 문장이 등록되었습니다.", Toast.LENGTH_LONG).show();
+                            }
+                            else{
+                                Toast.makeText(getActivity(),"형식이 잘못 되었습니다.", Toast.LENGTH_LONG).show();
                             }
                             try {sentence.save_csv();} catch (IOException e) {e.printStackTrace();}
 

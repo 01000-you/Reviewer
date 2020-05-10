@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,31 +13,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
-import com.example.eng_reviewer.DEFINE;
 import com.example.eng_reviewer.R;
 import com.example.eng_reviewer.sentences.Snt_manager;
 
 import java.io.IOException;
+import java.util.Locale;
+import static android.speech.tts.TextToSpeech.ERROR;
 
 public class ReviewerFragment extends Fragment {
+
+    TextToSpeech tts;
+    ToggleButton ToggleButton_TTS;
     Button Button_fail, Button_success, Button_back, Button_next;
     TextView TextView_eng_snt, TextView_kor_snt;
     Snt_manager sentence;
-//    CardView Cardview_main;
-
-
-    String[] edit_sentence = {"한글", "영어"};
-    boolean kor_edit_state;
-    boolean eng_edit_state;
 
     int success_button_state = 0;
+    int state_TTS = 0;
 
     public ReviewerFragment(Snt_manager _sentece) {
         sentence = _sentece;
@@ -50,7 +50,7 @@ public class ReviewerFragment extends Fragment {
 
         getActivity().setTitle("Review");
 
-        //xml 레이아웃이 인플레이트 되고 자바소스 코드와 연결이된다.
+        ToggleButton_TTS = rootView.findViewById(R.id.ToggleButton_TTS);
         Button_fail = rootView.findViewById(R.id.Button_fail);
         Button_success = rootView.findViewById(R.id.Button_success);
         Button_back = rootView.findViewById(R.id.Button_back);
@@ -65,8 +65,32 @@ public class ReviewerFragment extends Fragment {
             e.printStackTrace();
             Log.e("Load_csv", "Fail to read CSV");
         }
+        sentence.add_cnt();
         TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
 
+        tts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != ERROR) {
+                    // 언어를 선택한다.
+                    tts.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
+
+        ToggleButton_TTS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(ToggleButton_TTS.isChecked()){
+                    state_TTS = 1;
+                    ToggleButton_TTS.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_action_volume_up, null));
+                }
+                else{
+                    state_TTS = 0;
+                    ToggleButton_TTS.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_action_volume_mute, null));
+                }
+            }
+        });
         TextView_kor_snt.setOnLongClickListener(new View.OnLongClickListener() {
             public boolean onLongClick(View view) {
                 kor_dialog();
@@ -82,14 +106,13 @@ public class ReviewerFragment extends Fragment {
         Button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sentence.add_cnt();
                 sentence.next_sentence();
+                sentence.add_cnt();
                 TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
                 TextView_eng_snt.setText("");
                 success_button_state = 0;
                 if (sentence.get_eng().equals("The End")) {
-                    Button_success.setClickable(false);
-                    Button_fail.setClickable(false);
+                    Button_AllsetClickable(false);
                 }
             }
         });
@@ -101,8 +124,7 @@ public class ReviewerFragment extends Fragment {
                 TextView_eng_snt.setText("");
                 success_button_state = 0;
                 if (!sentence.get_eng().equals("The End")) {
-                    Button_success.setClickable(true);
-                    Button_fail.setClickable(true);
+                    Button_AllsetClickable(true);
                 }
             }
         });
@@ -113,12 +135,12 @@ public class ReviewerFragment extends Fragment {
                     if (!sentence.get_eng().equals("The End")) {
                         sentence.sub_score();
                         sentence.next_sentence();
+                        sentence.add_cnt();
                         TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
                         TextView_eng_snt.setText("");
                         success_button_state = (success_button_state + 1) % 2;
                     } else {
-                        Button_success.setClickable(false);
-                        Button_fail.setClickable(false);
+                        Button_AllsetClickable(false);
                     }
                 }
             }
@@ -128,14 +150,17 @@ public class ReviewerFragment extends Fragment {
             public void onClick(View view) {
                 if (success_button_state == 0) { // 정답 미공개 상태
                     TextView_eng_snt.setText(sentence.get_eng());
+                    if(state_TTS == 1){
+                        tts.speak(sentence.get_eng(),TextToSpeech.QUEUE_ADD, null, null);
+                    }
                 } else { // 정답 공개 상태
                     sentence.add_score();
                     sentence.next_sentence();
+                    sentence.add_cnt();
                     TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
                     TextView_eng_snt.setText("");
                     if (sentence.get_eng().equals("The End")) {
-                        Button_success.setClickable(false);
-                        Button_fail.setClickable(false);
+                        Button_AllsetClickable(false);
                     }
                 }
                 success_button_state = (success_button_state + 1) % 2;
@@ -143,19 +168,41 @@ public class ReviewerFragment extends Fragment {
         });
         return rootView;
     }
+    public void Button_AllsetClickable(boolean b){
+        Button_success.setClickable(b);
+        Button_fail.setClickable(b);
+        Button_next.setClickable(b);
+        TextView_eng_snt.setLongClickable(b);
+        TextView_kor_snt.setLongClickable(b);
+    }
     void kor_dialog()
     {
         final EditText kor_edittext = new EditText(getContext());
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        kor_edittext.setHint("한글");
+        kor_edittext.setText(sentence.get_kor());
         builder.setTitle("Enter the correct sentence.");
 //        builder.setMessage("AlertDialog Content");
         builder.setView(kor_edittext);
+        builder.setNeutralButton("DELETE",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        sentence.delete();
+//                        sentence.set_kor_sentence(kor_edittext.getText().toString());
+                        TextView_kor_snt.setText((Integer.parseInt(sentence.get_cnt()) + 1) + ". " + sentence.get_kor());
+                        TextView_eng_snt.setText("");
+                        sentence.add_cnt();
+                        Toast.makeText(getActivity(), "문장이 삭제되었습니다.", Toast.LENGTH_LONG).show();
+                        if (sentence.get_eng().equals("The End")) {
+                            Button_AllsetClickable(false);
+                        }
+                    }
+                });
         builder.setPositiveButton("EDIT",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         sentence.set_kor_sentence(kor_edittext.getText().toString());
                         TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
+                        Toast.makeText(getActivity(), "한글문장이 수정되었습니다.", Toast.LENGTH_LONG).show();
                     }
                 });
         builder.setNegativeButton("CANCEL",
@@ -178,6 +225,7 @@ public class ReviewerFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         sentence.set_eng_sentence(eng_edittext.getText().toString());
                         TextView_eng_snt.setText(sentence.get_eng());
+                        Toast.makeText(getActivity(), "영어문장이 수정되었습니다.", Toast.LENGTH_LONG).show();
                     }
                 });
         builder.setNegativeButton("CANCEL",
@@ -187,4 +235,5 @@ public class ReviewerFragment extends Fragment {
                 });
         builder.show();
     }
+
 }

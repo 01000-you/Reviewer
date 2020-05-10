@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textColor="@android:color/black"
-            android:hint="Write your sentences\n ex) \n안녕하세요 \nHello\n..."
+            android:hint="@string/Enroll_example"
             android:gravity="bottom"
             >
         </EditText>

@@ -57,7 +57,6 @@ public class Snt_manager {
         }
         else
             next_sentence = sentence_list.get(sentence_cnt);
-        add_cnt();
     }
     public String get_kor(){
         return next_sentence[DEFINE.KOR];
@@ -85,17 +84,16 @@ public class Snt_manager {
         writer.close();
     }
 
-    public boolean add_text(String[] text_arr) {
+    public int add_text(String[] text_arr) {
         int length = text_arr.length;
         if(length % 2 == 0) {
             for (int i = 0; i < length; i += 2) {
                 sentence_list.add(new String[]{text_arr[i], text_arr[i + 1], "0"});
             }
-            return true;
+            return length;
         }
         else{
-            return false;
-            // 짝수가 안맞는 에러 표시
+            return 0;
         }
     }
     public void set_eng_sentence(String s) {
@@ -103,5 +101,11 @@ public class Snt_manager {
     }
     public void set_kor_sentence(String s) {
         next_sentence[DEFINE.KOR] = s;
+    }
+
+    public void delete() {
+        sentence_list.remove(--sentence_cnt);
+        num_of_sent = sentence_list.size();
+        next_sentence();
     }
 }
