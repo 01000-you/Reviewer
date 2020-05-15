@@ -10,7 +10,7 @@
         android:id="@+id/Cardview_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="2.7"
         android:background="#FFFFFF"
         android:layout_marginLeft="5sp"
         android:layout_marginRight="5sp"
@@ -57,7 +57,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="4.5"
             >
             <LinearLayout
                 android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                         android:layout_marginBottom="10sp"
                         android:layout_width="30sp"
                         android:layout_height="30sp"
-                        android:background="@drawable/ic_action_volume_mute"
+                        android:background="@drawable/ic_action_volume_off"
                         ></ToggleButton>
                 </LinearLayout>
             </LinearLayout>
@@ -87,7 +87,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2.5"
+            android:layout_weight="2.8"
             android:orientation="vertical"
             android:weightSum="3">
             <LinearLayout
