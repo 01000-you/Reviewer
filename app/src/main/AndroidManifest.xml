@@ -20,7 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Fragment.EnrollFragment"></activity>
-        <activity android:name=".NewsActivity"></activity>
+        <activity android:name=".etc.NewsActivity"></activity>
         <activity android:name=".Fragment.ReviewerFragment"></activity>
         <activity android:name=".MainActivity">
 

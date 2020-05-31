@@ -1,6 +1,5 @@
-package com.example.eng_reviewer;
+package com.example.eng_reviewer.etc;
 
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.eng_reviewer.R;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     private String[] mDataset;

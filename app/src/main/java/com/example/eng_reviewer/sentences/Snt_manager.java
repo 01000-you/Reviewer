@@ -1,5 +1,6 @@
 package com.example.eng_reviewer.sentences;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -8,6 +9,7 @@ import com.example.eng_reviewer.DEFINE;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,17 +17,37 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static android.os.Environment.getExternalStorageDirectory;
+
 public class Snt_manager {
 
     private CSVReader reader;
+    private CSVWriter tmp_writer;
     private String[] next_sentence;
     private int sentence_cnt = 0;
+    private int list_cnt = 0;
     private List<String[]> sentence_list;
     private int num_of_sent;
+    private String curr_csv_path;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
+
+    private void init_csv() throws IOException {
+        tmp_writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
+        String[] hellow_world = "반가워요#Nice to meet you#0".split("#");
+        tmp_writer.writeNext(hellow_world);
+        tmp_writer.close();
+    }
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void load_csv() throws IOException {
-        reader = new CSVReader(new FileReader(DEFINE.LOAD_PATH), '\t');
+        String mydir_path = Environment.getExternalStorageDirectory()+DEFINE.EXTERNAL_PATH;
+        final File mydir = new File(mydir_path);
+        curr_csv_path = mydir_path + "/" + DEFINE.LIST_NAME + String.valueOf(list_cnt) + ".csv";
+        if(!mydir.exists()){
+            mydir.mkdirs();
+            init_csv();
+        }
+        reader = new CSVReader(new FileReader(curr_csv_path), '\t');
         sentence_list = reader.readAll();
         num_of_sent = sentence_list.size();
         Collections.shuffle(sentence_list);
@@ -77,7 +99,7 @@ public class Snt_manager {
         sentence_cnt = sentence_cnt + 1;
     }
     public void save_csv() throws IOException {
-        CSVWriter writer = new CSVWriter(new FileWriter(DEFINE.SAVE_PATH), '\t');
+        CSVWriter writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
         for (String[] i : sentence_list) {
             writer.writeNext(i);
         }

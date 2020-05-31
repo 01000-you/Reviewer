@@ -1,10 +1,12 @@
-package com.example.eng_reviewer;
+package com.example.eng_reviewer.etc;
 
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.eng_reviewer.R;
 
 public class NewsActivity extends AppCompatActivity {
 
