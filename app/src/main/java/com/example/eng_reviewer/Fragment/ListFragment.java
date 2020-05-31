@@ -35,26 +35,15 @@ public class ListFragment extends Fragment {
     private ListView listview;
     private ListViewAdapter adapter;
 
+    public ListFragment (ListViewAdapter input_adapter){
+        adapter = input_adapter;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container, @NonNull Bundle savedInstanceState){
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_themelist, container, false);
 
-        adapter = new ListViewAdapter();
-
         listview = (ListView) rootView.findViewById(R.id.listview);
         listview.setAdapter((ListAdapter) adapter);
-
-        File f = new File(Environment.getExternalStorageDirectory() + DEFINE.EXTERNAL_PATH);
-        File[] files = f.listFiles(new FileFilter(){
-           @Override
-           public boolean accept(File pathname) {
-               return pathname.getName().toLowerCase(Locale.US).endsWith(".csv");
-           }
-        });
-        for(int i = 0; i < files.length; i++){
-            adapter.addItem(files[i].toString(), "내용" + String.valueOf(i));
-        }
-        adapter.notifyDataSetChanged();
 
         return rootView;
     }

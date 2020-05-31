@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.eng_reviewer_debug"
+        applicationId "com.example.eng_reviewer_refactoring"
 //        testApplicationId "com.example.eng_reviewer.tests"
         minSdkVersion 23
         targetSdkVersion 28

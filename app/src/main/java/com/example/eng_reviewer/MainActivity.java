@@ -1,35 +1,33 @@
 package com.example.eng_reviewer;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import com.example.eng_reviewer.Fragment.EnrollFragment;
+import com.example.eng_reviewer.Fragment.List.ListViewAdapter;
 import com.example.eng_reviewer.Fragment.ListFragment;
 import com.example.eng_reviewer.Fragment.ReviewerFragment;
 import com.example.eng_reviewer.sentences.Snt_manager;
 
 public class MainActivity extends AppCompatActivity {
-    Snt_manager sentence;
+    Snt_manager curr_sentence;
+    private ListViewAdapter list_adapter;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public MainActivity(){
-        sentence = new Snt_manager();
+        list_adapter = new ListViewAdapter();
+        curr_sentence = new Snt_manager(list_adapter.get_curr_item().getFilepath());
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -44,24 +42,22 @@ public class MainActivity extends AppCompatActivity {
         pager.setOffscreenPageLimit(2);
 
         //getSupportFragmentManager로 프래그먼트 참조가능
-        MoviePagerAdapter adapter = new MoviePagerAdapter(getSupportFragmentManager());
+        MoviePagerAdapter Fragment_adapter = new MoviePagerAdapter(getSupportFragmentManager());
 
+        ListFragment fragment0 = new ListFragment(list_adapter);
+        Fragment_adapter.addItem(fragment0);
 
-        ListFragment fragment0 = new ListFragment();
-        adapter.addItem(fragment0);
+        ReviewerFragment fragment1 = new ReviewerFragment(curr_sentence, getApplicationContext());
+        Fragment_adapter.addItem(fragment1);
 
-        ReviewerFragment fragment1 = new ReviewerFragment(sentence);
-        adapter.addItem(fragment1);
+        EnrollFragment fragment2 = new EnrollFragment(curr_sentence);
+        Fragment_adapter.addItem(fragment2);
 
-        EnrollFragment fragment2 = new EnrollFragment(sentence);
-        adapter.addItem(fragment2);
-
-        pager.setAdapter(adapter);
+        pager.setAdapter(Fragment_adapter);
         pager.setCurrentItem(1);
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -110,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d("MainActivity", "On_Stop");
         try {
-            sentence.save_csv();
+            curr_sentence.save_csv();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,11 +1,10 @@
 package com.example.eng_reviewer.Fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +16,9 @@ import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.example.eng_reviewer.Fragment.List.ListViewItem;
 import com.example.eng_reviewer.R;
 import com.example.eng_reviewer.sentences.Snt_manager;
 
@@ -38,11 +37,19 @@ public class ReviewerFragment extends Fragment {
     int success_button_state = 0;
     int state_TTS = 0;
 
-    public ReviewerFragment(Snt_manager _sentece) {
+    public ReviewerFragment(Snt_manager _sentece, Context context) {
         sentence = _sentece;
+        tts = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != ERROR) {
+                    // 언어를 선택한다.
+                    tts.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,24 +66,8 @@ public class ReviewerFragment extends Fragment {
         TextView_eng_snt = rootView.findViewById(R.id.TextView_eng_snt);
         TextView_kor_snt = rootView.findViewById(R.id.TextView_kor_snt);
 
-        try {
-            sentence.load_csv();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("Load_csv", "Fail to read CSV");
-        }
-        sentence.add_cnt();
-        TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
 
-        tts = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if(status != ERROR) {
-                    // 언어를 선택한다.
-                    tts.setLanguage(Locale.ENGLISH);
-                }
-            }
-        });
+        TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
 
         ToggleButton_TTS.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +78,7 @@ public class ReviewerFragment extends Fragment {
                 }
                 else{
                     state_TTS = 0;
-                    ToggleButton_TTS.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_action_volume_mute, null));
+                    ToggleButton_TTS.setBackgroundDrawable(getResources().getDrawable(R.drawable.ic_action_volume_off, null));
                 }
             }
         });
@@ -187,7 +178,6 @@ public class ReviewerFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         sentence.delete();
-//                        sentence.set_kor_sentence(kor_edittext.getText().toString());
                         TextView_kor_snt.setText((Integer.parseInt(sentence.get_cnt()) + 1) + ". " + sentence.get_kor());
                         TextView_eng_snt.setText("");
                         sentence.add_cnt();

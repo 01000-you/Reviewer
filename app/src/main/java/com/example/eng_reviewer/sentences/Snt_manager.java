@@ -31,7 +31,15 @@ public class Snt_manager {
     private String curr_csv_path;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-
+    public Snt_manager(String path){
+        try {
+            this.load_csv(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("Load_csv", "Fail to read CSV");
+        }
+        this.add_cnt();
+    }
     private void init_csv() throws IOException {
         tmp_writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
         String[] hellow_world = "반가워요#Nice to meet you#0".split("#");
@@ -39,10 +47,10 @@ public class Snt_manager {
         tmp_writer.close();
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void load_csv() throws IOException {
+    public void load_csv(String path) throws IOException {
         String mydir_path = Environment.getExternalStorageDirectory()+DEFINE.EXTERNAL_PATH;
         final File mydir = new File(mydir_path);
-        curr_csv_path = mydir_path + "/" + DEFINE.LIST_NAME + String.valueOf(list_cnt) + ".csv";
+        curr_csv_path = path;
         if(!mydir.exists()){
             mydir.mkdirs();
             init_csv();
