@@ -114,7 +114,7 @@ public class ListFragment extends Fragment {
 
         private int curr_item_idx = 0;
 
-        public ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>();
+        public ArrayList<ListViewItem> listViewItemList = new ArrayList();
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         public ListViewAdapter() throws IOException {
@@ -171,17 +171,14 @@ public class ListFragment extends Fragment {
                 final Context context = parent.getContext();
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.listview_item, parent, false);
-
-                TextView titleTextView = convertView.findViewById(R.id.title);
-                ToggleButton ToggleButton_Load= convertView.findViewById(R.id.Button_load);
-                Button Button_Edit= convertView.findViewById(R.id.Button_Edit);
-
-                listViewItem.setTitleTextView(titleTextView);
-                listViewItem.setTextButton_load(ToggleButton_Load);
-                listViewItem.setTextButton_edit(Button_Edit);
             }
+            TextView titleTextView = convertView.findViewById(R.id.title);
+            ToggleButton ToggleButton_Load= convertView.findViewById(R.id.Button_load);
+            Button Button_Edit= convertView.findViewById(R.id.Button_Edit);
 
-
+            listViewItem.setTitleTextView(titleTextView);
+            listViewItem.setTextButton_load(ToggleButton_Load);
+            listViewItem.setTextButton_edit(Button_Edit);
 
             if (position == curr_item_idx){
                 listViewItem.ToggleButton_Load.setChecked(true);
