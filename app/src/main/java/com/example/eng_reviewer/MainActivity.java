@@ -21,7 +21,10 @@ import com.example.eng_reviewer.sentences.Snt_manager;
 
 public class MainActivity extends AppCompatActivity {
     Snt_manager curr_sentence;
-    private ListFragment.ListViewAdapter list_adapter;
+
+    ListFragment ListFrag = null;
+    ReviewerFragment ReviewerFrag = null;
+    EnrollFragment EnrollFrag = null;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public MainActivity() throws IOException {
@@ -42,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         //getSupportFragmentManager로 프래그먼트 참조가능
         MoviePagerAdapter Fragment_adapter = new MoviePagerAdapter(getSupportFragmentManager());
 
-        ListFragment ListFrag = null;
+
         try {
             ListFrag = new ListFragment();
         } catch (IOException ex) {
@@ -51,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
         Fragment_adapter.addItem(ListFrag);
         curr_sentence = ListFrag.getCurrentSentence();
 
-        final ReviewerFragment ReviewerFrag = new ReviewerFragment(curr_sentence, getApplicationContext());
+        ReviewerFrag = new ReviewerFragment(curr_sentence, getApplicationContext());
         Fragment_adapter.addItem(ReviewerFrag);
         ListFrag.setReivewer(ReviewerFrag);
 
-        EnrollFragment EnrollFrag = new EnrollFragment(curr_sentence);
+        EnrollFrag = new EnrollFragment(curr_sentence);
         Fragment_adapter.addItem(EnrollFrag);
         ListFrag.setEnroller(EnrollFrag);
 
@@ -70,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 if(position == 0){
-                    setTitle("Theme list");
+                    setTitle("Playlist");
                 }
                 if(position == 1){
                     setTitle("Review");
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         Log.d("MainActivity", "On_Stop");
         try {
-            curr_sentence.save_csv();
+            ListFrag.getSentenceMng().save_csv();
         } catch (IOException e) {
             e.printStackTrace();
         }

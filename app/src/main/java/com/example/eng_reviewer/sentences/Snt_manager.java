@@ -27,6 +27,9 @@ public class Snt_manager {
     private int num_of_sent;
     private String curr_csv_path;
 
+    public Snt_manager() {
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     public Snt_manager(String path){
         try {
@@ -35,7 +38,6 @@ public class Snt_manager {
             e.printStackTrace();
             Log.e("Load_csv", "Fail to read CSV");
         }
-//        this.add_cnt(); //###
     }
 
     public Snt_manager(String file_path, String file_name, int file_num, int file_order) throws IOException {
@@ -43,10 +45,11 @@ public class Snt_manager {
         add_csv(file_num, file_order);
     }
 
-    private void init_csv() throws IOException {
-        tmp_writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
-        String[] header = (curr_csv_path.split("/")[curr_csv_path.split("/").length-1]+"#0#"+"-10000").split("#");
-        String[] hellow_world = "반가워요. 좌로 밀면 문장 등록 페이지가 있어요.#Nice to meet you#0".split("#");
+    public void init_csv() throws IOException {
+        curr_csv_path = Environment.getExternalStorageDirectory()+ DEFINE.EXTERNAL_PATH + "/snt_data0";
+        tmp_writer = new CSVWriter(new FileWriter(curr_csv_path + ".csv"), '\t');
+        String[] header = ("new list0#0#-10000").split("#");
+        String[] hellow_world = (DEFINE.START_SENT+"#Nice to meet you#0").split("#");
         tmp_writer.writeNext(header);
         tmp_writer.writeNext(hellow_world);
         tmp_writer.close();
@@ -65,13 +68,7 @@ public class Snt_manager {
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void load_csv(String path) throws IOException {
-        String mydir_path = Environment.getExternalStorageDirectory()+DEFINE.EXTERNAL_PATH;
-        final File mydir = new File(mydir_path);
         curr_csv_path = path;
-        if(!mydir.exists()){
-            mydir.mkdirs();
-            init_csv();
-        }
         reader = new CSVReader(new FileReader(curr_csv_path), '\t');
         sentence_list = reader.readAll();
         reader.close();
