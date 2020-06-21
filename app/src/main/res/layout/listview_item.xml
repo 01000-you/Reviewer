@@ -8,10 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:weightSum="2"
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_gravity="left"
             android:layout_weight="1"
             android:orientation="vertical"
@@ -19,30 +20,60 @@
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="test"
                 android:textSize="15dp"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="0dp"
             android:layout_gravity="top"
             android:layout_weight="1"
             android:orientation="horizontal"
             >
             <LinearLayout
-                android:layout_width="0dp"
+                android:gravity="right"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:orientation="horizontal"
+                android:weightSum="1"
                 >
                 <TextView
                     android:id="@+id/content"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
-                    android:text="테스트입니다."
+                    android:layout_weight="0.5"
                     >
                 </TextView>
+                <Button
+                    android:id="@+id/Button_Edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="Edit"
+                    android:layout_weight="0.3"
+                    android:textColor="@color/blue"
+                    android:textStyle="bold"
+                    android:textSize="12dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/btn_white"
+                    android:layout_marginBottom="10dp"
+                    ></Button>
+                <ToggleButton
+                    android:id="@+id/Button_load"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textOn="Loaded"
+                    android:textOff="Load"
+                    android:layout_weight="0.3"
+                    android:textColor="#ffffff"
+                    android:textStyle="bold"
+                    android:textSize="12dp"
+                    android:background="@drawable/btn_blue"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="10dp"
+                    ></ToggleButton>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

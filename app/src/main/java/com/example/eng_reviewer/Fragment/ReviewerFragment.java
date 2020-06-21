@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.eng_reviewer.Fragment.List.ListViewItem;
 import com.example.eng_reviewer.R;
 import com.example.eng_reviewer.sentences.Snt_manager;
 
@@ -31,7 +30,7 @@ public class ReviewerFragment extends Fragment {
     TextToSpeech tts;
     ToggleButton ToggleButton_TTS;
     Button Button_fail, Button_success, Button_back, Button_next;
-    TextView TextView_eng_snt, TextView_kor_snt;
+    public TextView TextView_eng_snt, TextView_kor_snt;
     Snt_manager sentence;
 
     int success_button_state = 0;
@@ -97,8 +96,8 @@ public class ReviewerFragment extends Fragment {
         Button_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sentence.next_sentence();
                 sentence.add_cnt();
+                sentence.next_sentence();
                 TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
                 TextView_eng_snt.setText("");
                 success_button_state = 0;
@@ -125,8 +124,8 @@ public class ReviewerFragment extends Fragment {
                 if (success_button_state == 1) { // 정답 공개 상태
                     if (!sentence.get_eng().equals("The End")) {
                         sentence.sub_score();
-                        sentence.next_sentence();
                         sentence.add_cnt();
+                        sentence.next_sentence();
                         TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
                         TextView_eng_snt.setText("");
                         success_button_state = (success_button_state + 1) % 2;
@@ -146,8 +145,8 @@ public class ReviewerFragment extends Fragment {
                     }
                 } else { // 정답 공개 상태
                     sentence.add_score();
-                    sentence.next_sentence();
                     sentence.add_cnt();
+                    sentence.next_sentence();
                     TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
                     TextView_eng_snt.setText("");
                     if (sentence.get_eng().equals("The End")) {
@@ -178,9 +177,9 @@ public class ReviewerFragment extends Fragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         sentence.delete();
-                        TextView_kor_snt.setText((Integer.parseInt(sentence.get_cnt()) + 1) + ". " + sentence.get_kor());
+                        TextView_kor_snt.setText((Integer.parseInt(sentence.get_cnt())) + ". " + sentence.get_kor());
                         TextView_eng_snt.setText("");
-                        sentence.add_cnt();
+//                        sentence.add_cnt();
                         Toast.makeText(getActivity(), "문장이 삭제되었습니다.", Toast.LENGTH_LONG).show();
                         if (sentence.get_eng().equals("The End")) {
                             Button_AllsetClickable(false);
@@ -226,4 +225,15 @@ public class ReviewerFragment extends Fragment {
         builder.show();
     }
 
+    public void setSentence(Snt_manager sentence) throws IOException {
+        this.sentence.save_csv();
+        this.sentence = sentence;
+        TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
+        TextView_eng_snt.setText("");
+    }
+    public void ViewCurrSentence(){
+        sentence.next_sentence();
+        TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
+        TextView_eng_snt.setText("");
+    }
 }

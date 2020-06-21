@@ -87,4 +87,9 @@ public class EnrollFragment extends Fragment {
                 });
         builder.show();
     }
+
+    public void setSentence(Snt_manager curr_snt_mng) {
+        this.sentence.getSentenceList().clear();
+        this.sentence = curr_snt_mng;
+    }
 }

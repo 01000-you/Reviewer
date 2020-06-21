@@ -13,19 +13,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
-import static android.os.Environment.getExternalStorageDirectory;
 
 public class Snt_manager {
 
     private CSVReader reader;
     private CSVWriter tmp_writer;
     private String[] next_sentence;
-    private int sentence_cnt = 0;
-    private int list_cnt = 0;
+    private int sentence_cnt = 1;
     private List<String[]> sentence_list;
     private int num_of_sent;
     private String curr_csv_path;
@@ -38,11 +35,31 @@ public class Snt_manager {
             e.printStackTrace();
             Log.e("Load_csv", "Fail to read CSV");
         }
-        this.add_cnt();
+//        this.add_cnt(); //###
     }
+
+    public Snt_manager(String file_path, String file_name, int file_num, int file_order) throws IOException {
+        curr_csv_path=file_path + '/' + file_name + ".csv";
+        add_csv(file_num, file_order);
+    }
+
     private void init_csv() throws IOException {
         tmp_writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
-        String[] hellow_world = "반가워요#Nice to meet you#0".split("#");
+        String[] header = (curr_csv_path.split("/")[curr_csv_path.split("/").length-1]+"#0#"+"-10000").split("#");
+        String[] hellow_world = "반가워요. 좌로 밀면 문장 등록 페이지가 있어요.#Nice to meet you#0".split("#");
+        tmp_writer.writeNext(header);
+        tmp_writer.writeNext(hellow_world);
+        tmp_writer.close();
+    }
+    public void add_csv(int num, int order) throws IOException {
+        tmp_writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
+
+        String[] header = ("new list"+String.valueOf(num)+"#"+String.valueOf(order)+"#"+"-10000").split("#");
+        String[] hellow_world = "문장을 등록해주세요#Please enter your sentence#0".split("#");
+        sentence_list = new ArrayList<>();
+        sentence_list.add(header);
+        sentence_list.add(hellow_world);
+        tmp_writer.writeNext(header);
         tmp_writer.writeNext(hellow_world);
         tmp_writer.close();
     }
@@ -57,8 +74,9 @@ public class Snt_manager {
         }
         reader = new CSVReader(new FileReader(curr_csv_path), '\t');
         sentence_list = reader.readAll();
+        reader.close();
         num_of_sent = sentence_list.size();
-        Collections.shuffle(sentence_list);
+//        Collections.shuffle(sentence_list);
         sentence_list.sort(new Comparator<String[]>() {
             @Override
             public int compare(String[] t0, String[] t1) {
@@ -76,8 +94,8 @@ public class Snt_manager {
 
     public void before_sentence(){
         if(sentence_cnt != 1){
-            sentence_cnt = sentence_cnt - 1;
             next_sentence = sentence_list.get(sentence_cnt - 1);
+            sentence_cnt = sentence_cnt - 1;
         }
     }
     public void next_sentence() {
@@ -116,9 +134,13 @@ public class Snt_manager {
 
     public int add_text(String[] text_arr) {
         int length = text_arr.length;
+        if(sentence_list.get(1)[0].equals(DEFINE.NEW_SENT) || sentence_list.get(1)[0].equals(DEFINE.START_SENT) ){
+            sentence_list.remove(1);
+        }
         if(length % 2 == 0) {
             for (int i = 0; i < length; i += 2) {
                 sentence_list.add(new String[]{text_arr[i], text_arr[i + 1], "0"});
+                num_of_sent = sentence_list.size();
             }
             return length;
         }
@@ -126,6 +148,11 @@ public class Snt_manager {
             return 0;
         }
     }
+
+    public void sub_cnt() {
+        sentence_cnt--;
+    }
+
     public void set_eng_sentence(String s) {
         next_sentence[DEFINE.ENG] = s;
     }
@@ -134,8 +161,20 @@ public class Snt_manager {
     }
 
     public void delete() {
-        sentence_list.remove(--sentence_cnt);
+        sentence_list.remove(sentence_cnt--);
         num_of_sent = sentence_list.size();
         next_sentence();
+    }
+    public List<String[]> getSentenceList(){
+        return sentence_list;
+    }
+    public void setSentenceList(List<String[]> _sentence_list){
+        sentence_list = _sentence_list;
+    }
+    public String getTitle(){
+        return sentence_list.get(0)[0];
+    }
+    public int getOrder(){
+        return Integer.parseInt(sentence_list.get(0)[1]);
     }
 }

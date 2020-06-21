@@ -15,22 +15,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.example.eng_reviewer.Fragment.EnrollFragment;
-import com.example.eng_reviewer.Fragment.List.ListViewAdapter;
 import com.example.eng_reviewer.Fragment.ListFragment;
 import com.example.eng_reviewer.Fragment.ReviewerFragment;
 import com.example.eng_reviewer.sentences.Snt_manager;
 
 public class MainActivity extends AppCompatActivity {
     Snt_manager curr_sentence;
-    private ListViewAdapter list_adapter;
+    private ListFragment.ListViewAdapter list_adapter;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public MainActivity(){
-        list_adapter = new ListViewAdapter();
-        curr_sentence = new Snt_manager(list_adapter.get_curr_item().getFilepath());
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public MainActivity() throws IOException {
+//        list_adapter = new ListFragment.ListViewAdapter();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,14 +42,23 @@ public class MainActivity extends AppCompatActivity {
         //getSupportFragmentManager로 프래그먼트 참조가능
         MoviePagerAdapter Fragment_adapter = new MoviePagerAdapter(getSupportFragmentManager());
 
-        ListFragment fragment0 = new ListFragment(list_adapter);
-        Fragment_adapter.addItem(fragment0);
+        ListFragment ListFrag = null;
+        try {
+            ListFrag = new ListFragment();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        Fragment_adapter.addItem(ListFrag);
+        curr_sentence = ListFrag.getCurrentSentence();
 
-        ReviewerFragment fragment1 = new ReviewerFragment(curr_sentence, getApplicationContext());
-        Fragment_adapter.addItem(fragment1);
+        final ReviewerFragment ReviewerFrag = new ReviewerFragment(curr_sentence, getApplicationContext());
+        Fragment_adapter.addItem(ReviewerFrag);
+        ListFrag.setReivewer(ReviewerFrag);
 
-        EnrollFragment fragment2 = new EnrollFragment(curr_sentence);
-        Fragment_adapter.addItem(fragment2);
+        EnrollFragment EnrollFrag = new EnrollFragment(curr_sentence);
+        Fragment_adapter.addItem(EnrollFrag);
+        ListFrag.setEnroller(EnrollFrag);
+
 
         pager.setAdapter(Fragment_adapter);
         pager.setCurrentItem(1);
@@ -67,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 if(position == 1){
                     setTitle("Review");
+                    ReviewerFrag.ViewCurrSentence();
                 }
                 if(position == 2){
                     setTitle("Register");
