@@ -58,12 +58,13 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="4.5"
+            android:weightSum="5"
             >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:orientation="horizontal"
+                android:orientation="vertical"
             >
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -81,6 +82,24 @@
                         android:layout_height="30sp"
                         android:background="@drawable/ic_action_volume_off"
                         ></ToggleButton>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="10dp"
+                    >
+                    <com.google.android.gms.ads.AdView
+                        xmlns:ads="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/adView_review"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        ads:adSize="BANNER"
+                        ads:adUnitId="ca-app-pub-1195074851560755/5789758082">
+                    </com.google.android.gms.ads.AdView>
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

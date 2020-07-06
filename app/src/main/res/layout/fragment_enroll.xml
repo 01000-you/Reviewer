@@ -34,6 +34,7 @@
         android:layout_weight="2"
         android:orientation="vertical"
         android:weightSum="10"
+        android:gravity="bottom"
         >
 
         <Button
@@ -64,6 +65,18 @@
             android:layout_marginRight="15dp"
             android:layout_marginBottom="10dp"
             ></Button>
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView_enroll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            ads:adSize="BANNER"
+            ads:adUnitId="ca-app-pub-1195074851560755/9656797002">
+        </com.google.android.gms.ads.AdView>
     </LinearLayout>
 
 

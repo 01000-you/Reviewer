@@ -3,6 +3,6 @@
     <string name="app_name_refactor">드루와 영어2</string>
     <string name="splash_main_title">Druwa\nEnglish Sentences</string>
     <string name="splash_sub_title">English Reviewer</string>
-    <string name="splash_main_text">머리로 알고있다.\n하지만 입은 알지 못한다.</string>
-    <string name="Enroll_example">Write your sentences\n ex) \n안녕하세요 \nHello\n...</string>
+    <string name="splash_main_text">머리로는 알고있다.\n하지만 입은 알지 못한다.</string>
+    <string name="Enroll_example">"Write your sentences\n ex) \n안녕하세요 \nHello \n오늘 날씨가 어때요?  \nHow's the weather today? \n..."</string>
 </resources>
