@@ -25,6 +25,7 @@ import com.drw_eng.eng_reviewer.DEFINE;
 import com.drw_eng.eng_reviewer.List.ListViewItem;
 import com.drw_eng.eng_reviewer.R;
 import com.drw_eng.eng_reviewer.sentences.Snt_manager;
+import com.drw_eng.eng_reviewer.util.PreferenceManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
@@ -52,17 +53,28 @@ public class ListFragment extends Fragment {
     private EnrollFragment EnrollFrag;
     private FloatingActionButton FloatingButton_Add;
 
+    private Context mContext;
+
+    @Override
+    public void onAttach(Context context){
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    public ListViewAdapter getAdapter(){
+        return adapter;
+    }
     public Snt_manager getSentenceMng(){
         return curr_snt_mng;
     }
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ListFragment () throws IOException {
+    public ListFragment (Context context) throws IOException {
+        mContext = context;
+
         String mydir_path = Environment.getExternalStorageDirectory()+DEFINE.EXTERNAL_PATH;
         final File mydir = new File(mydir_path);
         if(!mydir.exists()){
             mydir.mkdirs();
-            // 파일 만들어주고.
-//          new Snt_manager(Environment.getExternalStorageDirectory()+ DEFINE.EXTERNAL_PATH, "snt_data0", 0, 0);
             new Snt_manager().init_csv();
         }
         adapter = new ListFragment.ListViewAdapter();
@@ -116,7 +128,7 @@ public class ListFragment extends Fragment {
 
     public class ListViewAdapter extends BaseAdapter {
 
-        private int curr_item_idx = 0;
+        private int curr_item_idx;
 
         public ArrayList<ListViewItem> listViewItemList = new ArrayList();
 
@@ -145,6 +157,12 @@ public class ListFragment extends Fragment {
                 reader.close();
                 this.addItem(Header[0].split("\t")[0].replaceAll("\"",""), files[i].toString(), creationtime, Integer.parseInt(Header[0].split("\t")[1].replaceAll("\"","")));
             }
+
+            // last sentence list load
+            curr_item_idx = PreferenceManager.getInt(mContext, "last_item_idx");
+            if(curr_item_idx == -1 && curr_item_idx >= this.getCount()){
+                curr_item_idx = 0;
+            }
             // sort
             listViewItemList.sort( new Comparator<ListViewItem>() {
                 @Override
@@ -159,6 +177,10 @@ public class ListFragment extends Fragment {
                 }
             });
             this.notifyDataSetChanged();
+        }
+
+        public int getCurrItemIdx(){
+            return curr_item_idx;
         }
 
         @Override
@@ -232,6 +254,7 @@ public class ListFragment extends Fragment {
                                             e.printStackTrace();
                                         }
                                         listViewItemList.remove(listViewItem);
+                                        if (position < curr_item_idx) setCurrentIdx(curr_item_idx - 1);
 
                                         adapter.notifyDataSetChanged();
                                         Toast.makeText(getActivity(), "리스트가 삭제되었습니다.", Toast.LENGTH_LONG).show();
@@ -261,6 +284,7 @@ public class ListFragment extends Fragment {
                                     snt_mng.setSentenceList(stn_list);
                                     try {
                                         snt_mng.save_csv();
+
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                     }

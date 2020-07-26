@@ -73,6 +73,16 @@
                     android:orientation="horizontal"
                     >
                     <ToggleButton
+                        android:id="@+id/PlayButton_TTS"
+                        android:textOff=""
+                        android:textOn=""
+                        android:layout_marginRight="10sp"
+                        android:layout_marginBottom="10sp"
+                        android:layout_width="30sp"
+                        android:layout_height="30sp"
+                        android:background="@drawable/auto_play_button"
+                        ></ToggleButton>
+                    <ToggleButton
                         android:id="@+id/ToggleButton_TTS"
                         android:textOff=""
                         android:textOn=""

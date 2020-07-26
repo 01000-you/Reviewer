@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.drw_eng.eng_reviewer.R;
 import com.drw_eng.eng_reviewer.sentences.Snt_manager;
+import com.drw_eng.eng_reviewer.util.PreferenceManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -84,7 +85,8 @@ public class EnrollFragment extends Fragment {
                             else{
                                 Toast.makeText(getActivity(),"형식이 잘못 되었습니다.", Toast.LENGTH_LONG).show();
                             }
-                            try {sentence.save_csv();} catch (IOException e) {e.printStackTrace();}
+                            try {sentence.save_csv();
+                            } catch (IOException e) {e.printStackTrace();}
 
                         }
                     }

@@ -17,7 +17,7 @@ import androidx.core.app.ActivityCompat;
 
 public class SplashActivity extends Activity {
     private static final String TAG = "permission";
-    private int SPLASH_DISPLAY_TIME = 3000;
+    private int SPLASH_DISPLAY_TIME = 2000;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

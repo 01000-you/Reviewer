@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.drw_eng.eng_reviewer">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -10,9 +11,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/drw_icon"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/drw_icon_round"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.drw_eng.eng_reviewer.SplashActivity">
@@ -22,9 +23,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.drw_eng.eng_reviewer.Fragment.EnrollFragment"></activity>
+        <activity android:name="com.drw_eng.eng_reviewer.Fragment.EnrollFragment"
+            tools:ignore="Instantiatable"></activity>
         <activity android:name="com.drw_eng.eng_reviewer.etc.NewsActivity"></activity>
-        <activity android:name="com.drw_eng.eng_reviewer.Fragment.ReviewerFragment"></activity>
+        <activity android:name="com.drw_eng.eng_reviewer.Fragment.ReviewerFragment"
+            tools:ignore="Instantiatable"></activity>
         <activity android:name="com.drw_eng.eng_reviewer.MainActivity">
         </activity>
         <meta-data

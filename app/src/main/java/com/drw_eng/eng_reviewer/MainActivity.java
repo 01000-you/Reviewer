@@ -1,24 +1,30 @@
 package com.drw_eng.eng_reviewer;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import com.drw_eng.eng_reviewer.Fragment.EnrollFragment;
 import com.drw_eng.eng_reviewer.Fragment.ListFragment;
 import com.drw_eng.eng_reviewer.Fragment.ReviewerFragment;
 import com.drw_eng.eng_reviewer.sentences.Snt_manager;
 
+import com.drw_eng.eng_reviewer.util.PreferenceManager;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -35,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     EnrollFragment EnrollFrag = null;
 
     private InterstitialAd mInterstitialAd;
+    private Context mContext;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public MainActivity() throws IOException {
@@ -45,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = this;
+
         setContentView(R.layout.activity_main);
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
@@ -75,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         try {
-            ListFrag = new ListFragment();
+            ListFrag = new ListFragment(mContext);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -101,10 +111,18 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 if(position == 0){
                     setTitle("Playlist");
+                    if(ReviewerFrag.play_thread_state){
+                        ReviewerFrag.success_button_state=0;
+                        ReviewerFrag.play_thread_state = false;
+                        ReviewerFrag.play_stop();
+                    }
                 }
                 if(position == 1){
                     setTitle("Review");
+                    // ReviewFrag 버튼 상태 초기화
                     ReviewerFrag.ViewCurrSentence();
+                    ReviewerFrag.success_button_state = 0;
+                    ReviewerFrag.TextView_eng_snt.setText("");
                 }
                 if(position == 2){
                     setTitle("Register");
@@ -145,9 +163,39 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "On_Stop");
         try {
             ListFrag.getSentenceMng().save_csv();
+            PreferenceManager.setInt(mContext,"last_item_idx", ListFrag.getAdapter().getCurrItemIdx());
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        // 다시 켤때마다 가끔 한글로 언어가 바뀌는 현상
+        ReviewerFrag.tts.setLanguage(Locale.ENGLISH);
+    }
+    @Override
+    // 1.뒤로가기 입력을 감지한다.
+    public void onBackPressed() {
+        // 2. 다이얼로그를 생성한다.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("알림");
+        builder.setMessage("앱을 종료하시겠습니까?");
+        builder.setNegativeButton("취소", null);
+        builder.setPositiveButton("종료", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                try {
+                    ListFrag.getSentenceMng().save_csv();
+                    PreferenceManager.setInt(mContext,"last_item_idx", ListFrag.getAdapter().getCurrItemIdx());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        });
+        builder.show();
     }
 }
 
