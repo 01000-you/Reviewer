@@ -160,7 +160,7 @@ public class ListFragment extends Fragment {
 
             // last sentence list load
             curr_item_idx = PreferenceManager.getInt(mContext, "last_item_idx");
-            if(curr_item_idx == -1 && curr_item_idx >= this.getCount()){
+            if(curr_item_idx == -1 || curr_item_idx >= this.getCount()){
                 curr_item_idx = 0;
             }
             // sort
@@ -311,6 +311,7 @@ public class ListFragment extends Fragment {
                         setCurrentIdx(position);
                         curr_snt_mng = new Snt_manager(get_curr_item().getFilepath());
                         try {
+                            ReviewerFrag.sentence.save_csv();
                             ReviewerFrag.setSentence(curr_snt_mng);
                             EnrollFrag.setSentence(curr_snt_mng);
                             Toast.makeText(getActivity(), "리스트가 로드되었습니다.", Toast.LENGTH_LONG).show();
@@ -320,7 +321,7 @@ public class ListFragment extends Fragment {
                     }
                     else {
                     }
-                    adapter.notifyDataSetChanged();
+                    adpter.notifyDataSetChanged();
                 }
             });
             return convertView;

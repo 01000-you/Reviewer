@@ -144,6 +144,7 @@ public class ReviewerFragment extends Fragment {
         TextView_eng_snt = rootView.findViewById(R.id.TextView_eng_snt);
         TextView_kor_snt = rootView.findViewById(R.id.TextView_kor_snt);
 
+
         TextView_kor_snt.setText(sentence.get_cnt() + ". " + sentence.get_kor());
 
         handler = new Handler();

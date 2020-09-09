@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class Snt_manager {
     private List<String[]> sentence_list;
     private int num_of_sent;
     private String curr_csv_path;
+
+    String[] last_return = {DEFINE.END_SENT, DEFINE.END_SENT_ENG};
+    String[] start_return = {DEFINE.START_SENT, DEFINE.START_SENT_ENG};
 
     public Snt_manager() {
     }
@@ -49,21 +53,16 @@ public class Snt_manager {
         curr_csv_path = Environment.getExternalStorageDirectory()+ DEFINE.EXTERNAL_PATH + "/snt_data0";
         tmp_writer = new CSVWriter(new FileWriter(curr_csv_path + ".csv"), '\t');
         String[] header = ("new list0#0#-10000").split("#");
-        String[] hellow_world = (DEFINE.START_SENT+"#Nice to meet you#0").split("#");
         tmp_writer.writeNext(header);
-        tmp_writer.writeNext(hellow_world);
         tmp_writer.close();
     }
     public void add_csv(int num, int order) throws IOException {
         tmp_writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
 
         String[] header = ("new list"+String.valueOf(num)+"#"+String.valueOf(order)+"#"+"-10000").split("#");
-        String[] hellow_world = "문장을 등록해주세요#Please enter your sentence#0".split("#");
         sentence_list = new ArrayList<>();
         sentence_list.add(header);
-        sentence_list.add(hellow_world);
         tmp_writer.writeNext(header);
-        tmp_writer.writeNext(hellow_world);
         tmp_writer.close();
     }
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -73,7 +72,7 @@ public class Snt_manager {
         sentence_list = reader.readAll();
         reader.close();
         num_of_sent = sentence_list.size();
-//        Collections.shuffle(sentence_list);
+        Collections.shuffle(sentence_list);
         sentence_list.sort(new Comparator<String[]>() {
             @Override
             public int compare(String[] t0, String[] t1) {
@@ -96,9 +95,10 @@ public class Snt_manager {
         }
     }
     public void next_sentence() {
-        String[] null_return = {"마지막 문장", "The End"};
-        if (sentence_cnt == num_of_sent){
-            next_sentence = null_return;
+        if (sentence_cnt >= num_of_sent){
+            next_sentence = last_return;
+            if (num_of_sent == 1)
+                next_sentence = start_return;
         }
         else
             next_sentence = sentence_list.get(sentence_cnt);
@@ -119,7 +119,8 @@ public class Snt_manager {
         next_sentence[DEFINE.SCORE] = String.valueOf(Integer.parseInt(next_sentence[DEFINE.SCORE]) + DEFINE.UP_POINT);
     }
     public void add_cnt(){
-        sentence_cnt = sentence_cnt + 1;
+        if(sentence_cnt < num_of_sent)
+            sentence_cnt = sentence_cnt + 1;
     }
     public void save_csv() throws IOException {
         CSVWriter writer = new CSVWriter(new FileWriter(curr_csv_path), '\t');
@@ -131,9 +132,9 @@ public class Snt_manager {
 
     public int add_text(String[] text_arr) {
         int length = text_arr.length;
-        if(sentence_list.get(1)[0].equals(DEFINE.NEW_SENT) || sentence_list.get(1)[0].equals(DEFINE.START_SENT) ){
-            sentence_list.remove(1);
-        }
+//        if(sentence_list.get(1)[0].equals(DEFINE.NEW_SENT) || sentence_list.get(1)[0].equals(DEFINE.START_SENT) ){
+//            sentence_list.remove(1);
+//        }
         if(length % 2 == 0) {
             for (int i = 0; i < length; i += 2) {
                 sentence_list.add(new String[]{text_arr[i], text_arr[i + 1], "0"});
